@@ -21,12 +21,18 @@ $(document).ready(function(){
 
     getData();
     assignClicks();
+    $(".ascending").on("click", function(){
+        getData();
+    });
+    $(".decending").on("click", function(){
+        getBata()
+    });
 });
 
 function getData(){
     $.ajax({
         url: '/assignments',
-        data: {},
+        data: {sortOrder: 1},
         method: 'get',
         dataType: 'json',
         success: function(data, textStatus, jqXHR){
@@ -42,7 +48,24 @@ function getData(){
     });
 }
 
-
+function getBata() {
+    $.ajax({
+        url: '/assignments',
+        data: {sortOrder: -1},
+        method: 'get',
+        dataType: 'json',
+        success: function (data, textStatus, jqXHR) {
+            clearData();
+            processData(data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+        },
+        complete: function (jqXHR, textStatus) {
+            console.log("getBata() Ajax Get Complete:", textStatus);
+        }
+    });
+}
 function deleteData(id){
     $.ajax({
         url: '/assignments/' + id,
@@ -207,4 +230,24 @@ function clearEditor(){
     $scoreEditor.val('');
     $dateEditor.val('');
     $editPanel.slideUp().delay().removeClass('change');
+}
+
+
+function getBeta(){
+    $.ajax({
+        url: '/assignments',
+        data: {},
+        method: 'get',
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR){
+            clearData();
+            processData(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            console.log(textStatus,errorThrown);
+        },
+        complete: function(jqXHR, textStatus){
+            console.log("getData() Ajax Get Complete:", textStatus);
+        }
+    });
 }
