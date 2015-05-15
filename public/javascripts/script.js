@@ -21,18 +21,15 @@ $(document).ready(function(){
 
     getData();
     assignClicks();
-    $(".ascending").on("click", function(){
-        getData();
-    });
-    $(".decending").on("click", function(){
-        getBata()
-    });
+
+
 });
+
 
 function getData(){
     $.ajax({
         url: '/assignments',
-        data: {sortOrder: 1},
+        data: {},
         method: 'get',
         dataType: 'json',
         success: function(data, textStatus, jqXHR){
@@ -48,10 +45,22 @@ function getData(){
     });
 }
 
-function getBata() {
+
+function getNata(name, asc, dec) {
+
+    var search = {};
+    if (name) {
+        search.name = name;
+    }
+    if (asc) {
+        search.sortOrder = asc;
+    }
+    if (dec) {
+        search.sortOrder = dec;
+    }
     $.ajax({
-        url: '/assignments',
-        data: {sortOrder: -1},
+        url: '/assignments/',
+        data: search,
         method: 'get',
         dataType: 'json',
         success: function (data, textStatus, jqXHR) {
@@ -62,7 +71,7 @@ function getBata() {
             console.log(textStatus, errorThrown);
         },
         complete: function (jqXHR, textStatus) {
-            console.log("getBata() Ajax Get Complete:", textStatus);
+            console.log("getNata() Ajax Get Complete:", textStatus);
         }
     });
 }
@@ -212,6 +221,21 @@ function assignClicks(){
 
         updateData(data);
     });
+    $(".ascending").on("click", function(){
+        var asc = 1;
+        getNata(null, asc, null);
+    });
+    $(".decending").on("click", function(){
+        var dec = -1;
+        getNata(null,null,dec)
+    });
+    $(".search").on("click", function(){
+        var name = $("#name1").val();
+        if (name != "") {
+            getNata(name,null,null)
+        }
+
+    });
 }
 
 function showEditor(id,name, score, date){
@@ -230,24 +254,4 @@ function clearEditor(){
     $scoreEditor.val('');
     $dateEditor.val('');
     $editPanel.slideUp().delay().removeClass('change');
-}
-
-
-function getBeta(){
-    $.ajax({
-        url: '/assignments',
-        data: {},
-        method: 'get',
-        dataType: 'json',
-        success: function(data, textStatus, jqXHR){
-            clearData();
-            processData(data);
-        },
-        error: function(jqXHR, textStatus, errorThrown){
-            console.log(textStatus,errorThrown);
-        },
-        complete: function(jqXHR, textStatus){
-            console.log("getData() Ajax Get Complete:", textStatus);
-        }
-    });
 }

@@ -3,12 +3,20 @@ var router = express.Router();
 var assignments = require('../models/assignment');
 
 /* GET /assignments listing. */
-//router.get('/', function(req, res, next) {
-//  assignments.find(function (err, assignments) {
-//    if (err) return next(err);
-//    res.json(assignments);
-//  });
-//});
+router.get('/', function(req, res, next) {
+    var search = {};
+    if (req.query.name)
+        search = {name: req.query.name};
+    var order = {};
+    if (req.query.sortOrder)
+        order = {sort: {name: req.query.sortOrder}};
+    console.log(order);
+    assignments.find(search, null, order,
+        function (err, assignments) {
+    if (err) return next(err);
+    res.json(assignments);
+  });
+});
 
 /* POST /assignments */
 router.post('/', function(req, res, next) {
@@ -18,13 +26,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
-/* GET /assignments/id */
-router.get('/:id', function(req, res, next) {
-  assignments.findById(req.params.id, function (err, assignment) {
-    if (err) return next(err);
-    res.json(assignment);
-  });
-});
+
 
 /* PUT /assignments/:id */
 router.put('/:id', function(req, res, next) {
@@ -42,18 +44,9 @@ router.delete('/:id', function(req, res, next) {
   });
 });
 
-router.get('/', function(req, res, next) {
-  assignments.find({}, null,
-      {sort: {name: req.query.sortOrder}},
-      function (err, assignments) {
-        if (err)  next(err);
-        res.json(assignments);
-  });
-});
+
 
 
 console.log('assignments route loaded');
 module.exports = router;
 
-// var val = req.query.search;
-//console.log(val);
